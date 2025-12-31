@@ -5,9 +5,9 @@ use clap::{Parser, Subcommand};
 #[command(version, about, long_about = None)]
 pub struct Cli {
     #[command(subcommand)]
-    command: Command,
+    pub command: Command,
     #[arg(short, long, value_name = "PATH")]
-    dir: Option<PathBuf>
+    pub dir: Option<PathBuf>
 }
 
 #[derive(Debug, Subcommand)]
