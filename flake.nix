@@ -53,6 +53,8 @@
         ./nix/shell
         ./nix/pkgs
         ./nix/checks
+        ./nix/formatter
+        inputs.treefmt-nix.flakeModule
       ];
 
       systems = [

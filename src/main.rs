@@ -1,15 +1,16 @@
-use std::{env, fs::read_to_string};
+use std::{env, fs::read_to_string, path::PathBuf, str::FromStr};
 
+use crate::cli::{Cli, Command};
 use clap::Parser;
 use color_eyre::{Section, eyre::Result};
+use libnous::store::Store;
 use walkdir::WalkDir;
-use crate::cli::Cli;
 
 mod cli;
 
 fn main() -> Result<()> {
     color_eyre::install()?;
-    let cli = Cli::parse(); 
+    let cli = Cli::parse();
     println!("Received CLI argument: {cli:?}");
 
     let root_dir = cli.dir
@@ -29,7 +30,7 @@ fn main() -> Result<()> {
             Err(err) => {
                 walkdir_errors.push(err);
                 None
-            },
+            }
         })
         // Filter for Markdown files
         .filter(|e| e.file_type().is_file())
@@ -39,13 +40,15 @@ fn main() -> Result<()> {
             Err(err) => {
                 io_errors.push(err);
                 None
-            },
-        }).collect();
+            }
+        })
+        .collect();
 
-    files.iter().for_each(|(file, content)| {
-        println!("{:?}", file.path());
-        println!("{content}");
-    });
+    if let Command::Ast { path } = cli.command {
+        let store: Store = files.into();
+        let ast = store.get_ast(&path);
+        println!("Obtained AST: {ast:?}");
+    }
 
     Ok(())
 }
