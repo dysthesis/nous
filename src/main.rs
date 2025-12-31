@@ -11,15 +11,14 @@ mod cli;
 fn main() -> Result<()> {
     color_eyre::install()?;
     let cli = Cli::parse();
-    println!("Received CLI argument: {cli:?}");
 
     let root_dir = cli.dir
         // Default to the current working directory
         .map_or_else(env::current_dir, Ok)
         .with_note(|| "While getting the current working directory as a fallback, as no `dir` was not provided")?;
 
-    println!("Using directory: {root_dir:?}");
 
+    // TODO: Actually report these errors!
     let mut walkdir_errors = Vec::new();
     let mut io_errors = Vec::new();
 
@@ -44,10 +43,15 @@ fn main() -> Result<()> {
         })
         .collect();
 
-    if let Command::Ast { path } = cli.command {
+    if let Command::Ast { path, json } = cli.command {
         let store: Store = files.into();
         let ast = store.get_ast(&path);
-        println!("Obtained AST: {ast:?}");
+        if json {
+            println!("{}", serde_json::json!(ast));
+        } else {
+
+        println!("{ast:?}");
+        }
     }
 
     Ok(())

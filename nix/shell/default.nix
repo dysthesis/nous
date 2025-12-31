@@ -24,6 +24,9 @@
 
         # Prose
         valeConfigured
+
+        pandoc
+        jq
       ];
     };
   };

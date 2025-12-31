@@ -712,6 +712,7 @@ dependencies = [
  "markdown",
  "proptest",
  "proptest-derive",
+ "serde_json",
  "thiserror",
  "walkdir",
 ]

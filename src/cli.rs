@@ -15,5 +15,9 @@ pub enum Command {
     /// Parse Markdown files in the given directory
     Parse,
     /// For debugging, we expose an interface to get the AST of some given file
-    Ast { path: PathBuf }
+    Ast {
+        path: PathBuf,
+        #[arg(short, long)]
+        json: bool
+    }
 }
