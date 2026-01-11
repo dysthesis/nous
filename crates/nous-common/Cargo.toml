@@ -1,0 +1,12 @@
+[package]
+name = "nous-common"
+version.workspace = true
+edition.workspace = true
+publish = false
+
+[dependencies]
+# Barebones starter crate; no runtime dependencies.
+
+[dev-dependencies]
+proptest = "1.9"
+criterion = "0.5"

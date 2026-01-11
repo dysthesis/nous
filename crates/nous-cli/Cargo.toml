@@ -1,0 +1,8 @@
+[package]
+name = "nous-cli"
+version.workspace = true
+edition.workspace = true
+publish = false
+
+[dependencies]
+nous-common = { path = "../nous-common" }
