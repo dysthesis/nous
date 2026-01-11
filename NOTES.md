@@ -331,33 +331,13 @@ $G = (V, E)$, where
 
 ### Syntax representation
 
-There is currently an unresolved design decision we need to make on whether the
-note's syntax representation is something we want to include internally.
+Every vertex $v$ in $V$ can also be considered the root of a syntax tree $T_v$
+adhering to [mdast]. This is used as the document's internal representation. In
+addition to allowing `nous` to find and update links on changes in aliases, it
+allows for syntactic queries on $T_v$ in addition to of structural ones over $G$.
 
-#### Arguments for
-
-- Enables richer querying, allowing one to query over not just note relations,
-  but also syntax elements, _e.g._ finding Rust code blocks.
-- Allows us to bake in pretty-printing for the notes.
-  - TODO: Why would we want to bake that in, instead of having a default dumb-
-    printer and allowing users to bring their own printer for the TUI layer?
-- Probably faster due to the lack of context switching
-  - TODO: It's likely not _noticeably_ faster, though; a syntax-less approach 
-    would involve optionally running a link parser post-creation/edit, which can
-    be put in the background.
-    - Plus we won't have to deal with parsing ourselves, although if we use 
-      something like pulldown-cmark, that's likely negligible.
-
-#### Arguments against
-
-- Shrinks the state stored considerably, easing state management
-- Opens up the door to format-agnosticism
-  - We can open up an interface for external tools to inform us of links
-    - Given that it is in plain text, we could recognise [[wiki-links]], which
-      exposes the contract that an adapter layer could use; any other formats
-      can be used with `nous`, given an adapter that translates their own 
-      internal link format to [[wiki-links]].
-- Users can bring their own pretty-printer, enhancing customisability.
+There is an unresolved design decision here, in that should $T_v$ be a literal
+subgraph of $G$; that is, should they live in the same logical plane?
 
 Query
 -----
@@ -374,3 +354,4 @@ TUI
 [funnelsort]: https://en.wikipedia.org/wiki/Funnelsort
 [Gernot's List of System Benchmarking Crimes]: https://gernot-heiser.org/benchmarking-crimes.html
 [related paper]: https://arxiv.org/pdf/1801.02381
+[mdast]: https://github.com/syntax-tree/mdast
