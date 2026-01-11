@@ -307,17 +307,66 @@ Storage
 - An SQLite database is used to cache the contents and search faster, but with a
   strict requirement that no information is stored in the database that is not
   stored in the plaintext directory.
+- Caching layer needs to be built into `nous` in order to fulfill our latency
+  requirements.
 
 ```
-├──  config.toml
+├──  nous.toml
 ├──  index.db
 ├──  attachments
 ├──  contents
 │   └──  [IDENTIFIER].md
-├──  templates
 ├──  types
-└──  views
+└──  queries
 ```
+
+State
+-----
+
+The entirety of the state stored by `nous` is encapsulated by a directed graph
+$G = (V, E)$, where
+
+- $V$ is a set of typed vertices representing the notes, and
+- $E$ is a set of directed edges representing internal links.
+
+### Syntax representation
+
+There is currently an unresolved design decision we need to make on whether the
+note's syntax representation is something we want to include internally.
+
+#### Arguments for
+
+- Enables richer querying, allowing one to query over not just note relations,
+  but also syntax elements, _e.g._ finding Rust code blocks.
+- Allows us to bake in pretty-printing for the notes.
+  - TODO: Why would we want to bake that in, instead of having a default dumb-
+    printer and allowing users to bring their own printer for the TUI layer?
+- Probably faster due to the lack of context switching
+  - TODO: It's likely not _noticeably_ faster, though; a syntax-less approach 
+    would involve optionally running a link parser post-creation/edit, which can
+    be put in the background.
+    - Plus we won't have to deal with parsing ourselves, although if we use 
+      something like pulldown-cmark, that's likely negligible.
+
+#### Arguments against
+
+- Shrinks the state stored considerably, easing state management
+- Opens up the door to format-agnosticism
+  - We can open up an interface for external tools to inform us of links
+    - Given that it is in plain text, we could recognise [[wiki-links]], which
+      exposes the contract that an adapter layer could use; any other formats
+      can be used with `nous`, given an adapter that translates their own 
+      internal link format to [[wiki-links]].
+- Users can bring their own pretty-printer, enhancing customisability.
+
+Query
+-----
+
+CLI
+---
+
+TUI
+---
 
 [Content-addressable storage]: https://en.wikipedia.org/wiki/Content-addressable_storage
 [Messaging-app-like UI]: https://strflow.app/
